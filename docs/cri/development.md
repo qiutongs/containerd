@@ -2,29 +2,18 @@
 
 This document provides steps to build `cri` plugin and test it locally.
 
+> NOTE: This is part of the migration from: https://github.com/containerd/cri#getting-started-for-developers
+
 ## Install Dependencies
 
 1. Follow this [guide](https://github.com/containerd/containerd/blob/master/BUILDING.md) and install required dependencies.
 2. Install [CNI](https://github.com/containernetworking/cni) by following its homepage.
 
+> NOTE: An alternative of installing dependencies is running `sudo make install-cri-deps`. This is not offcially supported yet.
+
 ## Build and Install cri
 
 When building the containerd, cri is automatically being built unless you specify no_cri build tag. For more detail, see this [guide](https://github.com/containerd/containerd/blob/master/BUILDING.md#build-containerd)
-
-### Build Tags
-
-`cri` supports optional build tags for compiling support of various features.
-To add build tags to the make option the `BUILD_TAGS` variable must be set.
-
-```bash
-make BUILDTAGS='seccomp apparmor selinux'
-```
-
-| Build Tag | Feature                            | Dependency                      |
-|-----------|------------------------------------|---------------------------------|
-| seccomp   | syscall filtering                  | libseccomp development library  |
-| selinux   | selinux process and mount labeling | <none>                          |
-| apparmor  | apparmor profile support           | <none>                          |
 
 ### Running a Kubernetes local cluster
 
@@ -33,14 +22,21 @@ version, you can try `cri` in a local cluster:
 
 0. If containerd is already running as a daemon service, you need to stop it first.
 ```bash
-sudo service containerd stop
+sudo systemctl stop containerd
 ```
 
 1. Start the version of `containerd` with `cri` plugin that you built and installed
 above as root in a first terminal:
 ```bash
-sudo containerd
+sudo containerd -l debug
 ```
+
+After containerd is up, you can verify it with [crictl](https://github.com/kubernetes-sigs/cri-tools/blob/master/docs/crictl.md) tool:
+```bash
+sudo crictl info
+```
+You will see the containerd runtime information as output.
+
 2. From the Kubernetes project directory startup a local cluster using `containerd`:
 ```bash
 sudo CONTAINER_RUNTIME=remote CONTAINER_RUNTIME_ENDPOINT='unix:///run/containerd/containerd.sock' PATH=$PATH ./hack/local-up-cluster.sh
