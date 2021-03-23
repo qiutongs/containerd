@@ -6,10 +6,7 @@ This document provides steps to build `cri` plugin and test it locally.
 
 ## Install Dependencies
 
-1. Follow this [guide](https://github.com/containerd/containerd/blob/master/BUILDING.md) and install required dependencies.
-2. Install [CNI](https://github.com/containernetworking/cni) by following its homepage.
-
-> NOTE: An alternative of installing dependencies is running `sudo make install-cri-deps`. This is not offcially supported yet.
+`sudo make install-deps`
 
 ## Build and Install cri
 
